@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>domino</title>
+
+<button onclick="move();">スタート</button>
+<button onclick="setButton();">リスタート</button>
+
+<script src="three.min.js"></script>
+<style type="text/css">
+div#canvas-frame{
+  border: none;
+  cursor: pointer;
+  width: 1200px;
+  height: 500px;
+  background-color: #EEEEEE;
+}
+</style>
+<script>
+  var width, height;
+  var renderer;
+  function initThree() {
+    width = document.getElementById('canvas-frame').clientWidth;
+    height = document.getElementById('canvas-frame').clientHeight;
+    renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setSize(width, height);
+    document.getElementById('canvas-frame').appendChild(renderer.domElement);
+    renderer.setClearColorHex(0xffffff, 1.0);
+    renderer.shadowMapEnabled = true; //影
+  }
+   var camera; //カメラ
+   function initCamera() {
+     camera = new THREE.PerspectiveCamera( 45 , width / height , 1 , 10000 );
+     camera.position.set(900, 300, 800);
+     camera.up.x = 0; camera.up.y = 0; camera.up.z = 1;
+     camera.lookAt( {x:0, y:0, z:0 } );
+   }
+   var scene; //シーン
+   function initScene() {scene = new THREE.Scene();}
+   var light, light2;
+   function initLight() {
+     light = new THREE.DirectionalLight(0xFFFFFF, 1.0, 0);
+     light.position.set( 50, 50, 200 ); light.castShadow = true; //影
+     scene.add(light);
+     light2 = new THREE.AmbientLight(0x555555); scene.add(light2);
+   }
+  // 物体
+  var sphere, plane, cube3 = Array(), cuben2 = Array(), cuben3 = Array(), 
+  cuben4 = Array(), cuben5 = Array(), cuben6 = Array(), cuben7 = Array(), 
+  cuben8 = Array(), cuben9 = Array(), cuben10 = Array(), cuben11 = Array(),
+  cuben12 = Array(), cuben13 = Array(), cubeh1 = Array(), cubeh2 = Array(),
+  cubeh3 = Array(), cubeh4 = Array(), cubeh5 = Array(),  cubeh6 = Array(),
+  cubeh7 = Array(), cubeh8 = Array(), cubeh9 = Array(), cubeh10 = Array(),
+  cubeh11 = Array(), cubeh12 = Array(), cubeh13 = Array(), cubeh14 = Array(),
+  cubeh15 = Array(), cubeh16 = Array(), cubeh17 = Array(), cubeh18 = Array(), 
+  cubeh19 = Array(), cubeh20 = Array(), cubeh21 = Array(), cubeh22 = Array();
+  function initObject(){
+    plane = new THREE.Mesh(  //床
+      new THREE.PlaneGeometry(500, 1000), new THREE.MeshLambertMaterial({color: 0x999999}));
+    scene.add(plane); plane.position.set(0,5,-100); plane.receiveShadow = true;
+    sphere = new THREE.Mesh( //球体
+      new THREE.SphereGeometry(25, 25, 25), 
+      new THREE.MeshLambertMaterial({color: 0xff55ff, ambient:0xFF00FF}));
+    scene.add(sphere); sphere.position.set(-80, -400, -75); sphere.castShadow = true;  
+    for(var i=0; i<3; i++){ //ドミノ(初めの3つ)
+      cube3[i] = new THREE.Mesh(
+          new THREE.CubeGeometry(25,5,50), new THREE.MeshLambertMaterial({color: 0xff0000}));
+      scene.add(cube3[i]); cube3[i].position.set(-80, -280+20*i,-75); cube3[i].castShadow = true;}
+  //ドミノ(次のnつ)
+    for(var i=0; i<2; i++){
+      cuben2[i] = new THREE.Mesh(
+          new THREE.CubeGeometry(25,5,50), new THREE.MeshLambertMaterial({color: 0xff0000}));
+      scene.add(cuben2[i]); var x = -80+i*35-10; var y = -220;
+      cuben2[i].position.set(x, y, -75); cuben2[i].castShadow = true; }
+    for(var i=0; i<3; i++){
+      cuben3[i] = new THREE.Mesh(
+          new THREE.CubeGeometry(25,5,50), new THREE.MeshLambertMaterial({color: 0xff0000}));
+      scene.add(cuben3[i]); var x = -80+i*35-10*2; var y = -240+20*2;
+      cuben3[i].position.set(x, y, -75); cuben3[i].castShadow = true; }
+    for(var i=0; i<4; i++){
+      cuben4[i] = new THREE.Mesh(
+          new THREE.CubeGeometry(25,5,50), new THREE.MeshLambertMaterial({color: 0xff0000}));
+      scene.add(cuben4[i]); var x = -80+i*35-10*3; var y = -240+20*3;
+      cuben4[i].position.set(x, y, -75); cuben4[i].castShadow = true; } 
+    for(var i=0; i<5; i++){
+      cuben5[i] = new THREE.Mesh(
+          new THREE.CubeGeometry(25,5,50), new THREE.MeshLambertMaterial({color: 0xff0000}));
+      scene.add(cuben5[i]); var x = -80+i*35-10*(5-1); var y = -240+20*(5-1);
+      cuben5[i].position.set(x, y, -75); cuben5[i].castShadow = true; }
+    for(var i=0; i<6; i++){
+      cuben6[i] = new THREE.Mesh(
+          new THREE.CubeGeometry(25,5,50), new THREE.MeshLambertMaterial({color: 0xff0000}));
+      scene.add(cuben6[i]); var x = -80+i*35-10*(6-1); var y = -240+20*(6-1);
+      cuben6[i].position.set(x, y, -75); cuben6[i].castShadow = true; }
+    for(var i=0; i<7; i++){
+      cuben7[i] = new THREE.Mesh(
+          new THREE.CubeGeometry(25,5,50), new THREE.MeshLambertMaterial({color: 0xff0000}));
+      scene.add(cuben7[i]); var x = -80+i*35-10*(7-1); var y = -240+20*(7-1);
+      cuben7[i].position.set(x, y, -75); cuben7[i].castShadow = true; }
+    for(var i=0; i<8; i++){
+      cuben8[i] = new THREE.Mesh(
+          new THREE.CubeGeometry(25,5,50), new THREE.MeshLambertMaterial({color: 0xff0000}));
+      scene.add(cuben8[i]); var x = -80+i*35-10*(8-1); var y = -240+20*(8-1);
+      cuben8[i].position.set(x, y, -75); cuben8[i].castShadow = true; }
+    for(var i=0; i<9; i++){
+      cuben9[i] = new THREE.Mesh(
+          new THREE.CubeGeometry(25,5,50), new THREE.MeshLambertMaterial({color: 0xff0000}));
+      scene.add(cuben9[i]); var x = -80+i*35-10*(9-1); var y = -240+20*(9-1);
+      cuben9[i].position.set(x, y, -75); cuben9[i].castShadow = true; }
+    for(var i=0; i<10; i++){
+      cuben10[i] = new THREE.Mesh(
+          new THREE.CubeGeometry(25,5,50), new THREE.MeshLambertMaterial({color: 0xff0000}));
+      scene.add(cuben10[i]); var x = -80+i*35-10*(10-1); var y = -240+20*(10-1);
+      cuben10[i].position.set(x, y, -75); cuben10[i].castShadow = true; }
+    for(var i=0; i<11; i++){
+      cuben11[i] = new THREE.Mesh(
+          new THREE.CubeGeometry(25,5,50), new THREE.MeshLambertMaterial({color: 0xff0000}));
+      scene.add(cuben11[i]); var x = -80+i*35-10*(10); var y = -240+20*(10);
+      cuben11[i].position.set(x, y, -75); cuben11[i].castShadow = true; }
+    for(var i=0; i<12; i++){
+      cuben12[i] = new THREE.Mesh(
+          new THREE.CubeGeometry(25,5,50), new THREE.MeshLambertMaterial({color: 0xff0000}));
+      scene.add(cuben12[i]);
+      var x = -80+i*35-10*(12-1); var y = -240+20*(12-1);
+      cuben12[i].position.set(x, y, -75); cuben12[i].castShadow = true; }
+    for(var i=0; i<13; i++){
+      cuben13[i] = new THREE.Mesh(
+          new THREE.CubeGeometry(25,5,50),  new THREE.MeshLambertMaterial({color: 0xff0000}));
+      scene.add(cuben13[i]); var x = -80+i*35-10*12; var y = -240+20*12;
+      cuben13[i].position.set(x, y, -75); cuben13[i].castShadow = true; }
+//材質を配列で指定
+var materials1 = [
+    new THREE.MeshBasicMaterial({color: 0x000000, ambient:0xFF0000}), //right
+    new THREE.MeshBasicMaterial({color: 0x000000, ambient:0xFF0000}), //left
+    new THREE.MeshBasicMaterial({color: 0x000000, ambient:0xFF0000}), //front
+    new THREE.MeshBasicMaterial({color: 0xff0000, ambient:0xFF0000}), //back
+    new THREE.MeshBasicMaterial({color: 0x000000, ambient:0xFF0000}), //top
+    new THREE.MeshBasicMaterial({color: 0x000000, ambient:0xFF0000})];
+var materials2 = [
+    new THREE.MeshBasicMaterial({color: 0x000000, ambient:0xFF0000}),
+    new THREE.MeshBasicMaterial({color: 0x000000, ambient:0xFF0000}),
+    new THREE.MeshBasicMaterial({color: 0x000000, ambient:0xFF0000}),
+    new THREE.MeshBasicMaterial({color: 0x000000, ambient:0xFF0000}),
+    new THREE.MeshBasicMaterial({color: 0x000000, ambient:0xFF0000}),
+    new THREE.MeshBasicMaterial({color: 0x000000, ambient:0xFF0000})];
+ //ドミノ(ハート)
+  for(var j=-4; j<=5; j++){
+    if((j==-1)||(j==0)||(j==-2)) {cubeh1[j] = new THREE.Mesh(
+      new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh1[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh1[j].position.set(-32+j*50, 20, -75); cubeh1[j].castShadow = true; scene.add(cubeh1[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==-1)||(j==0)||(j==-2)||(j==-3)) {cubeh2[j] = new THREE.Mesh(
+      new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh2[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));}
+  cubeh2[j].position.set(-32+j*50, 40, -75); cubeh2[j].castShadow = true; scene.add(cubeh2[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==1)||(j==0)||(j==-1)||(j==-2)||(j==-3)) {cubeh3[j] = new THREE.Mesh(
+      new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh3[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh3[j].position.set(-32+j*50, 60, -75); cubeh3[j].castShadow = true; scene.add(cubeh3[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==1)||(j==0)||(j==-1)||(j==-2)||(j==-3)) {cubeh4[j] = new THREE.Mesh(
+      new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh4[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh4[j].position.set(-32+j*50, 80, -75); cubeh4[j].castShadow = true; scene.add(cubeh4[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==2)|| (j==1)||(j==0)||(j==-1)||(j==-2)||(j==-3)||(j==-4)) {cubeh5[j] = new THREE.Mesh(
+      new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh5[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh5[j].position.set(-32+j*50, 100, -75); cubeh5[j].castShadow = true; scene.add(cubeh5[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==2)|| (j==1)||(j==0)||(j==-1)||(j==-2)||(j==-3)||(j==-4)) {cubeh6[j] = new THREE.Mesh(
+      new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh6[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh6[j].position.set(-32+j*50, 120, -75); cubeh6[j].castShadow = true; scene.add(cubeh6[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==3)||(j==2)||(j==1)||(j==0)||(j==-1)||(j==-2)||(j==-3)||(j==-4)) {cubeh7[j] = 
+      new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh7[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh7[j].position.set(-32+j*50, 140, -75); cubeh7[j].castShadow = true; scene.add(cubeh7[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==3)||(j==2)||(j==1)||(j==0)||(j==-1)||(j==-2)||(j==-3)||(j==-4)) {cubeh8[j] = 
+      new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh8[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh8[j].position.set(-32+j*50, 160, -75); cubeh8[j].castShadow = true; scene.add(cubeh8[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==4)||(j==3)||(j==2)||(j==1)||(j==0)||(j==-1)||(j==-2)||(j==-3)||(j==-4)) {cubeh9[j] =
+       new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh9[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh9[j].position.set(-32+j*50, 180, -75); cubeh9[j].castShadow = true; scene.add(cubeh9[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==4)||(j==3)||(j==2)||(j==1)||(j==0)||(j==-1)||(j==-2)) {cubeh10[j] =
+       new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh10[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh10[j].position.set(-32+j*50, 200, -75); cubeh10[j].castShadow = true; scene.add(cubeh10[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==2)||(j==1)||(j==0)||(j==-1)||(j==5)||(j==3)||(j==4)) {cubeh11[j] =
+       new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh11[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh11[j].position.set(-32+j*50, 220, -75); cubeh11[j].castShadow = true; scene.add(cubeh11[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==2)||(j==1)||(j==0)||(j==-1)||(j==5)||(j==3)||(j==4)) {cubeh12[j] =
+       new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh12[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh12[j].position.set(-32+j*50, 240, -75); cubeh12[j].castShadow = true; scene.add(cubeh12[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==2)||(j==1)||(j==0)||(j==-1)||(j==-2)||(j==3)||(j==4)) {cubeh13[j] = new THREE.Mesh(
+      new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh13[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh13[j].position.set(-32+j*50, 260, -75); cubeh13[j].castShadow = true; scene.add(cubeh13[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==2)||(j==1)||(j==0)||(j==-1)||(j==-2)||(j==3)||(j==4)||(j==-3)) {cubeh14[j] = new THREE.Mesh(
+      new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh14[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh14[j].position.set(-32+j*50, 280, -75); cubeh14[j].castShadow = true; scene.add(cubeh14[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==2)||(j==1)||(j==0)||(j==-1)||(j==-2)||(j==3)||(j==-4)||(j==-3)) {cubeh15[j] = new THREE.Mesh(
+      new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh15[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh15[j].position.set(-32+j*50, 300, -75); cubeh15[j].castShadow = true; scene.add(cubeh15[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==2)||(j==1)||(j==0)||(j==-1)||(j==-2)||(j==3)||(j==-4)||(j==-3)) {cubeh16[j] = new THREE.Mesh(
+      new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh16[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh16[j].position.set(-32+j*50, 320, -75); cubeh16[j].castShadow = true; scene.add(cubeh16[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==2)||(j==1)||(j==0)||(j==-1)||(j==-2)||(j==-4)||(j==-3)) {cubeh17[j] = 
+      new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh17[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh17[j].position.set(-32+j*50, 340, -75); cubeh17[j].castShadow = true; scene.add(cubeh17[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==2)||(j==1)||(j==0)||(j==-1)||(j==-2)||(j==-4)||(j==-3)) {cubeh18[j] = 
+      new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh18[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh18[j].position.set(-32+j*50, 360, -75); cubeh18[j].castShadow = true; scene.add(cubeh18[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==1)||(j==0)||(j==-1)||(j==-2)||(j==-3)) {cubeh19[j] =
+       new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh19[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh19[j].position.set(-32+j*50, 380, -75); cubeh19[j].castShadow = true; scene.add(cubeh19[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==1)||(j==0)||(j==-1)||(j==-2)||(j==-3)) {cubeh20[j] =
+       new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh20[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh20[j].position.set(-32+j*50, 400, -75); cubeh20[j].castShadow = true; scene.add(cubeh20[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==0)||(j==-1)||(j==-2)) {cubeh21[j] =
+       new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh21[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh21[j].position.set(-32+j*50, 420, -75); cubeh21[j].castShadow = true; scene.add(cubeh21[j]);}
+  for(var j=-4; j<=5; j++){
+    if((j==0)||(j==-1)||(j==-2)) {cubeh22[j] =
+       new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), new THREE.MeshFaceMaterial(materials1));}
+    else {cubeh22[j] = new THREE.Mesh( new THREE.CubeGeometry(25, 5, 50), 
+      new THREE.MeshFaceMaterial(materials2));} 
+  cubeh22[j].position.set(-32+j*50, 420, -75); cubeh22[j].castShadow = true; scene.add(cubeh22[j]);}
+}  
+var t=0; //時間セット
+function loop(){ //カメラワーク用
+    camera.lookAt( {x:0, y:0, z:100 } );
+     renderer.clear();
+     renderer.render(scene, camera);
+     window.requestAnimationFrame(loop); }
+function move(){ //ドミノ倒し
+    if(t<90){ sphere.position.set(-80, -400+t, -75); t+=2;}
+    else if(t<110) { cube3[0].rotation.set(-95, 0, 0); t+=10;}
+    else if(t<130) { cube3[1].rotation.set(-95, 0, 0); t+=10;}
+    else if(t<150) { cube3[2].rotation.set(-95, 0, 0); t+=10;}
+    else if(t<170) {for(var i=0; i<2; i++){ cuben2[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<190) {for(var i=0; i<3; i++){ cuben3[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<210) {for(var i=0; i<4; i++){ cuben4[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<230) {for(var i=0; i<5; i++){ cuben5[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<250) {for(var i=0; i<6; i++){ cuben6[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<270) {for(var i=0; i<7; i++){ cuben7[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<290) {for(var i=0; i<8; i++){ cuben8[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<310) {for(var i=0; i<9; i++){ cuben9[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<330) {for(var i=0; i<10; i++){ cuben10[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<350) {for(var i=0; i<11; i++){ cuben11[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<370) {for(var i=0; i<12; i++){ cuben12[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<390) {for(var i=0; i<13; i++){ cuben13[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<410) {for(var i=-4; i<6; i++){ cubeh1[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<430) {for(var i=-4; i<6; i++){ cubeh2[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<450) {for(var i=-4; i<6; i++){ cubeh3[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<470) {for(var i=-4; i<6; i++){ cubeh4[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<490) {for(var i=-4; i<6; i++){ cubeh5[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<510) {for(var i=-4; i<6; i++){ cubeh6[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<530) {for(var i=-4; i<6; i++){ cubeh7[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<550) {for(var i=-4; i<6; i++){ cubeh8[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<570) {for(var i=-4; i<6; i++){ cubeh9[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<590) {for(var i=-4; i<6; i++){ cubeh10[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<610) {for(var i=-4; i<6; i++){ cubeh11[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<630) {for(var i=-4; i<6; i++){ cubeh12[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<650) {for(var i=-4; i<6; i++){ cubeh13[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<670) {for(var i=-4; i<6; i++){ cubeh14[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<690) {for(var i=-4; i<6; i++){ cubeh15[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<710) {for(var i=-4; i<6; i++){ cubeh16[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<730) {for(var i=-4; i<6; i++){ cubeh17[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<750) {for(var i=-4; i<6; i++){ cubeh18[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<770) {for(var i=-4; i<6; i++){ cubeh19[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<790) {for(var i=-4; i<6; i++){ cubeh20[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<810) {for(var i=-4; i<6; i++){ cubeh21[i].rotation.set(-95, 0, 0);} t+=10;}
+    else if(t<830) {for(var i=-4; i<6; i++){ cubeh22[i].rotation.set(-95, 0, 0);} t+=10;}
+    window.requestAnimationFrame(move); }
+function setButton() { //リスタート
+  t = 0; sphere.position.set(-80, -400, -75);
+  for(var i=0; i<3; i++){ cube3[i].rotation.set(0, 0, 0);}
+  for(var i=0; i<2; i++){ cuben2[i].rotation.set(0, 0, 0);}
+  for(var i=0; i<3; i++){ cuben3[i].rotation.set(0, 0, 0);}
+  for(var i=0; i<4; i++){ cuben4[i].rotation.set(0, 0, 0);}
+  for(var i=0; i<5; i++){ cuben5[i].rotation.set(0, 0, 0);}
+  for(var i=0; i<6; i++){ cuben6[i].rotation.set(0, 0, 0);}
+  for(var i=0; i<7; i++){ cuben7[i].rotation.set(0, 0, 0);}
+  for(var i=0; i<8; i++){ cuben8[i].rotation.set(0, 0, 0);}
+  for(var i=0; i<9; i++){ cuben9[i].rotation.set(0, 0, 0);}
+  for(var i=0; i<10; i++){ cuben10[i].rotation.set(0, 0, 0);}
+  for(var i=0; i<11; i++){ cuben11[i].rotation.set(0, 0, 0);}
+  for(var i=0; i<12; i++){ cuben12[i].rotation.set(0, 0, 0);}
+  for(var i=0; i<13; i++){ cuben13[i].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){ cubeh1[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh2[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh3[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh4[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh5[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh6[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh7[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh8[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh9[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh10[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh11[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh12[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh13[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh14[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh15[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh16[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh17[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh18[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh19[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh20[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh21[j].rotation.set(0, 0, 0);}
+  for(var j=-4; j<=5; j++){cubeh22[j].rotation.set(0, 0, 0);} }
+    //マウスイベント
+    var down = false; var sy = 0, sz = 0;
+    window.onmousedown = function (ev){ //マウスダウン
+      if (ev.target == renderer.domElement) {
+        down = true; sy = ev.clientX; sz = ev.clientY;}};
+    window.onmouseup = function(){ down = false;}; //マウスアップ
+    window.onmousemove = function(ev) { var speed = 2; //マウスムーブ
+      if (down) {
+          if (ev.target == renderer.domElement) {
+          var dy = -(ev.clientX - sy); var dz = -(ev.clientY - sz);
+          camera.position.y += dy*speed; camera.position.z -= dz*speed;
+          sy -= dy; sz -= dz;}}}
+    window.onmousewheel = function(ev){ //マウスホイール
+      var speed = 0.2; camera.position.x += ev.wheelDelta * speed ;}
+  
+   function threeStart() {
+     initThree();
+     initCamera();
+     initScene();
+     initLight();
+     initObject();
+     loop();
+     startButton();
+     setButton();
+   }
+
+   </script>
+   </head>
+   <body onload="threeStart();">
+   <div id="canvas-frame"></div>
+   </body>
+   </html>
